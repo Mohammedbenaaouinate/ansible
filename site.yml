@@ -1,0 +1,39 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+
+  - name: install apache2 package
+    apt:
+      name:
+        - apache2
+      state: latest
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
+
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+
+  - name: install php package
+    apt:
+      name:
+        - libapache2-mod-php
+
+      state: latest
+
+- hosts: db_servers
+  become: true
+  tasks:
+
+
+  - name: install data base server package
+    apt:
+      name:
+        - mariadb-server
+      state: latest
+    when: ansible_distribution == "Ubuntu"
