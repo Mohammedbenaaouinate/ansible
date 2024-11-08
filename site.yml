@@ -20,6 +20,7 @@
 
 
   - name: install php package
+    tags: webserver,apache2lib,phppackage
     apt:
       name:
         - libapache2-mod-php
@@ -32,6 +33,7 @@
 
 
   - name: install data base server package
+    tags: db,mariadb,ubunto
     apt:
       name:
         - mariadb-server
