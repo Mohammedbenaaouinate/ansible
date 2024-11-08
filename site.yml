@@ -13,29 +13,46 @@
       update_cache: yes
     when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
 
+  - name: copy default html file for other servers.
+    tags: apache,apache2,httpd
+    copy:
+       src: default_site.html
+       dest: /var/www/html/index.html
+       owner: root
+       group: root
+       mode: 0644
+  - name: copy css style tous les serveurs
+    tags: copy syles css into each servers
+    copy:
+      src: styles.css
+      dest: /var/www/html/styles.css
+      owner: root
+      group: root
+      mode: 0644
 
-- hosts: web_servers
-  become: true
-  tasks:
+
+#- hosts: web_servers
+#  become: true
+#  tasks:
 
 
-  - name: install php package
-    tags: webserver,apache2lib,phppackage
-    apt:
-      name:
-        - libapache2-mod-php
+#  - name: install php package
+#    tags: webserver,apache2lib,phppackage
+#    apt:
+#      name:
+#        - libapache2-mod-php
 
-      state: latest
+#      state: latest
 
-- hosts: db_servers
-  become: true
-  tasks:
+#- hosts: db_servers
+#  become: true
+#  tasks:
 
 
-  - name: install data base server package
-    tags: db,mariadb,ubunto
-    apt:
-      name:
-        - mariadb-server
-      state: latest
-    when: ansible_distribution == "Ubuntu"
+#  - name: install data base server package
+#    tags: db,mariadb,ubunto
+#    apt:
+#      name:
+#        - mariadb-server
+#      state: latest
+#    when: ansible_distribution == "Ubuntu"
