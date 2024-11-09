@@ -1,0 +1,11 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: Create New users Isam in All Servers
+    tags: always
+    user:
+     name: Isam
+     groups: root
