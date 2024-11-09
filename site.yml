@@ -12,6 +12,23 @@
       state: latest
       update_cache: yes
     when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
+    register: result
+
+  - name: essaye de redémarrer le service apache 2 Après une installation
+    tags: restart,apache2
+    service:
+      name: apache2
+      state: restarted
+    when: result.changed == false
+
+
+  - name: Edit Security File In Order To Test This Fonctionnalité
+    tags: change,file,content
+    lineinfile:
+        path: /etc/apache2/apache2.conf
+        regexp: '^Timeout'
+        line: 'Timeout 500'
+    when: ansible_distribution == "Ubuntu"
 
   - name: copy default html file for other servers.
     tags: apache,apache2,httpd
@@ -21,6 +38,7 @@
        owner: root
        group: root
        mode: 0644
+
   - name: copy css style tous les serveurs
     tags: copy syles css into each servers
     copy:
@@ -31,28 +49,36 @@
       mode: 0644
 
 
-#- hosts: web_servers
-#  become: true
-#  tasks:
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+  - name: install php package
+    tags: webserver,apache2lib,phppackage
+    apt:
+      name:
+        - libapache2-mod-php
+
+      state: latest
+
+  - name: start web  server and interact with them
+    tags: start,apache onobunto
+    service:
+      name: apache2
+      state: started
+    when: ansible_distribution == "Ubuntu"
 
 
-#  - name: install php package
-#    tags: webserver,apache2lib,phppackage
-#    apt:
-#      name:
-#        - libapache2-mod-php
 
-#      state: latest
+- hosts: db_servers
+  become: true
+  tasks:
 
-#- hosts: db_servers
-#  become: true
-#  tasks:
-
-
-#  - name: install data base server package
-#    tags: db,mariadb,ubunto
-#    apt:
-#      name:
-#        - mariadb-server
-#      state: latest
-#    when: ansible_distribution == "Ubuntu"
+  - name: install data base server package
+    tags: db,mariadb,ubunto
+    apt:
+      name:
+        - mariadb-server
+      state: latest
+    when: ansible_distribution == "Ubuntu"
