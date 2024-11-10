@@ -1,0 +1,28 @@
+- name: install apache 2
+  tags: apache2,webserver
+  apt:
+    name:
+      - apache2
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+
+
+- name: copy the  basique html file
+  tags: default,html
+  copy:
+    src: default_site.html
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: 0777
+  when: ansible_distribution == "Ubuntu"
+
+
+- name: delete style file form apache server
+  tags: delete,styles,css
+  vars:
+    mypath: "/var/www/html/styles.css"
+  ansible.builtin.file:
+    path: "{{ mypath }}"
+    state: absent
+  when: ansible_distribution == "Ubuntu"
